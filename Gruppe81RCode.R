@@ -49,7 +49,7 @@ prozent <- p * 100 # Wahrscheinlichkeit in Prozent umrechnen
 # Ausgabe anzeigen
 cat("Die Wahrscheinlichkeit, dass mindestens eine Person ihr eigenes Geschenk zieht, beträgt:", prozent, "%\n")
 
-# 3.2, 3.3 & 3.4 ---------------------------------------------------------------
+# 3.2 & 3.3---------------------------------------------------------------
 
 # 3.2
 # (2 Punkte) Wir wollen uns jetzt von dem Spezialfall n = 10 lösen. Bitte schreiben Sie Ihren R
@@ -63,13 +63,6 @@ cat("Die Wahrscheinlichkeit, dass mindestens eine Person ihr eigenes Geschenk zi
 # (2 Punkte) Damit Sie Ihren Code auch noch n¨achstes Jahr Weihnachten verstehen und einsetzen
 # k¨onnen, ist es wichtig, dass er gut dokumentiert ist. Erg¨anzen Sie Kommentare in Ihrem Code,
 # die insbesondere die Eingaben und die Ausgabe unmissverst¨andlich beschreiben.
-#
-# 3.4
-# (2 Punkte) Bitte ¨uberlegen Sie sich vier Testf¨alle, die von Ihrer Funktion wichtel unglueck
-# unbedingt erf¨ullt sein m¨ussen und implementieren Sie diese, wobei das Paket testthat zu verwenden ist. Hier zwei Beispiele:
-#   • wichtel unglueck(n = 1, k = 1) sollte immer 1 zur¨uckgeben
-# • wichtel unglueck(n, k, iterationen = "ganz, ganz viele") sollte immer einen Fehler
-# zur¨uckgeben, unabh¨angig von den Werten f¨ur n und k
 
 # Funktion zur Berechnung des Wichtel Ungluecks von n Personen die mitmachen 
 # und k Personen die ihr eigenes Geschenk zurueckbekommen
@@ -163,6 +156,42 @@ wichtel_unglueck(n="zahl", k=1)
 wichtel_unglueck(n=123, k="t")
 wichtel_unglueck(n=200, k=20)
 
+# 3.4 ####
+# A3.4 4 Testfälle
+# Testfall für n=10, k=1, die Funktion wichtel_unglueck wird wie beabsichtigt genutzt und gibt eine W'keit von etwa 62% an
+test_that("Die Funktion funktioniert so wie sie sollte.", {
+  expect_no_error(wichtel_unglueck(n=10, k=1))
+})
+# Testfall für k=3, n=2, dies ist per Defintion verboten, wir suchen k unter n Personen die ihr eigenes Geschenk erhalten
+test_that("k darf nicht größer als n sein, dies testen wir hier durch k=3, n=2", {
+  expect_error(wichtel_unglueck(n=2, k=3), "k darf nicht größer als n sein.")
+})
+# Testfall für Buchstabeneingabe bei k
+test_that("Die Funktion gibt einen Fehler wieder, da wir für k ein Zeichen angeben.", {
+  expect_error(wichtel_unglueck(n=2, k="t", iterationen=150),
+               "Der Funktion wurde für das Argument k mindestens 1 Buchstabe übergeben, bitte geben Sie ausschließlich Zahlen ein.")
+})
+# Achtung, 3.2 bzw. wichtel_unglueck wurde umgeschrieben, strings sind grundsätzlich größer als zahlen,deshalb testen wir erst auf strings und dann auf k>n
+
+test_that("Die Funktion wichtel_unglueck bekommt keinen Wert für n übergeben", {
+  expect_error(wichtel_unglueck(k=5), "Das Argument für n wurde nicht übergeben, Wichtel_unglueck wird nun mit n=100 ausgeführt.")
+})
+
+
+## Testfälle die wir zusätzlich geschrieben haben
+# Testfall für n = k = 1 
+test_that("Die Funktion berechne_wahrscheinlichkeit gibt 1 zurück, wenn k = 1 und n = 1", {
+  # Überprüfe, ob das Ergebnis gleich 1 ist
+  expect_equal(wichtel_unglueck(n=1, k=1, iterationen = 1000), 1)
+})
+
+# Testfall für Buchstabeneingabe bei n
+test_that("Die Funktion gibt einen Fehler wieder, da wir für n ein Zeichen angeben.", {
+  expect_error(wichtel_unglueck(n="t",k=2), "Der Funktion wurde für das Argument n mindestens 1 Buchstabe übergeben, bitte geben Sie ausschließlich Zahlen ein.")
+})
+
+# Auch möglich: testen auf negative werte für n,k,iterationen
+# quasi alles auf das wir k testen können wir auch auf n testen und umgekehrt
 # A3.5 --------------------------------------------------------------------
 ### Import der Daten -- kompletter Datensatz
 #Originaler Datensatz, in Excel nur die Anführungszeichen entfernt
@@ -228,7 +257,7 @@ Grafik_CT <- ggplot(data = daten_81) +
   ylab("Anzahl Fahrräder") +
   xlab("Durchschnittstemperatur (in F)") +
   ggtitle("ausgeliehene Fahrräder abhängig von der Temperatur")+
-  theme(plot.title = element_text(size = 1, face = "bold"),  # Änderung der Schriftgröße - Überschrift + Fettdruck
+  theme(plot.title = element_text(size = 16, face = "bold"),  # Änderung der Schriftgröße - Überschrift + Fettdruck
         axis.text.x = element_text(size = 10),   # Änderung der Schriftgröße - X-Achsenbeschriftung
         axis.text.y = element_text(size = 10),   # Änderung der Schriftgröße - Y-Achsenbeschriftung
         axis.title.y.left  = element_text(size=14),  # Änderung der Schriftgröße - Y-Achsenüberschrift
@@ -295,7 +324,7 @@ Grafik_Regen_ja <- ggplot(data = filter(daten_81, precipitation > 0)) +
         axis.text.x = element_text(size = 10),   # Änderung der Schriftgröße - X-Achsenbeschriftung
         axis.text.y = element_text(size = 10),   # Änderung der Schriftgröße - Y-Achsenbeschriftung
         axis.title.y.left  = element_text(size=14),  # Änderung der Schriftgröße - Y-Achsenüberschrift
-        axis.title.x.bottom = element_text(size=14)) # Änderung der Schriftgröße - X-Achsenüberschrift 
+        axis.title.x.bottom = element_text(size=14))+ # Änderung der Schriftgröße - X-Achsenüberschrift 
   coord_cartesian(xlim = range(daten_81$count))
 
 #Erstellen Grafik für Tage ohne Regen + Anzahl ausgeliehener Fahrräder
@@ -308,7 +337,7 @@ Grafik_Regen_nein <- ggplot(data = filter(daten_81, precipitation == 0)) +
         axis.text.x = element_text(size = 10),   # Änderung der Schriftgröße - X-Achsenbeschriftung
         axis.text.y = element_text(size = 10),   # Änderung der Schriftgröße - Y-Achsenbeschriftung
         axis.title.y.left  = element_text(size=14),  # Änderung der Schriftgröße - Y-Achsenüberschrift
-        axis.title.x.bottom = element_text(size=14)) # Änderung der Schriftgröße - X-Achsenüberschrift 
+        axis.title.x.bottom = element_text(size=14))+ # Änderung der Schriftgröße - X-Achsenüberschrift 
   coord_cartesian(xlim = range(daten_81$count))
 
 #Grafiken zusammenführen
